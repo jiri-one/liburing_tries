@@ -1,0 +1,24 @@
+Arch Linux - kernel 6.0.2-arch1-1 (another HW then other tests!)
+anyio_write: 8.614910779000013 [s]
+anyio_write(Process): 9.363778019 [s]
+
+anyio_read: 0.35850348200000326 [s]
+anyio_read(Process): 0.42052172800000065 [s]
+
+aiofiles_write: 4.172714405999955 [s]
+aiofiles_write(Process): 4.618275561999999 [s]
+
+aiofiles_read: 0.30398840100002644 [s]
+aiofiles_read(Process): 0.34894519099999854 [s]
+
+uring_file_write: 2.8595384000000195 [s]
+uring_file_write(Process): 3.3059861559999995 [s]
+
+uring_file_read: 0.16623541999996405 [s]
+uring_file_read(Process): 0.16961471399999795 [s]
+
+aiofile_write: 2.857159911999986 [s]
+aiofile_write(Process): 2.8488119900000015 [s]
+
+aiofile_read: 0.37261278100004347 [s]
+aiofile_read(Process): 0.423075721 [s]

@@ -5,6 +5,7 @@ from aiofile import async_open
 import aiofiles
 import anyio
 import time
+import uring_file
 from typing import Callable, Coroutine
 from contextlib import contextmanager
 
@@ -87,19 +88,19 @@ async def run_performance_test():
 
     await io_test(aiofiles_write, aiofiles_read, "test_files", file_num)
 
-    # # uring_file
-    # async def uring_file_write(filen_name: str):
-    #     await wait_write()
-    #     async with uring_file.open(filen_name, "w") as f:
-    #         for _ in range(line_num):
-    #             await f.write(write_data)
+    # uring_file
+    async def uring_file_write(filen_name: str):
+        await wait_write()
+        async with uring_file.open(filen_name, "w") as f:
+            for _ in range(line_num):
+                await f.write(write_data)
 
-    # async def uring_file_read(filen_name: str):
-    #     await wait_read()
-    #     async with uring_file.open(filen_name, "r") as f:
-    #         await f.read()
+    async def uring_file_read(filen_name: str):
+        await wait_read()
+        async with uring_file.open(filen_name, "r") as f:
+            await f.read()
 
-    # await io_test(uring_file_write, uring_file_read, "test_files", file_num)
+    await io_test(uring_file_write, uring_file_read, "test_files", file_num)
 
     # aiofile
     async def aiofile_write(filen_name: str):
