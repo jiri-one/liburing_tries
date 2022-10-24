@@ -1,0 +1,18 @@
+Windows 10
+anyio_write: 12.486266699968837 [s]
+anyio_write(Process): 16.125 [s]
+
+anyio_read: 1.475201900000684 [s]
+anyio_read(Process): 1.078125 [s]
+
+aiofiles_write: 8.357917999965139 [s]
+aiofiles_write(Process): 11.546875 [s]
+
+aiofiles_read: 0.42413030000170693 [s]
+aiofiles_read(Process): 0.90625 [s]
+
+aiofile_write: 18.91662010003347 [s]
+aiofile_write(Process): 30.53125 [s]
+
+aiofile_read: 0.8317130000214092 [s]
+aiofile_read(Process): 1.375 [s]

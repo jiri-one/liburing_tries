@@ -1,0 +1,18 @@
+WSL2 Ubuntu on Windows10 
+anyio_write: 20.105697599999985 [s]
+anyio_write(Process): 31.822015999999998 [s]
+
+anyio_read: 2.3289747000000034 [s]
+anyio_read(Process): 3.5591773000000018 [s]
+
+aiofiles_write: 9.241322700000069 [s]
+aiofiles_write(Process): 13.593195399999999 [s]
+
+aiofiles_read: 0.9059932999999774 [s]
+aiofiles_read(Process): 2.1853611000000015 [s]
+
+aiofile_write: 23.15455380000003 [s]
+aiofile_write(Process): 8.431743999999995 [s]
+
+aiofile_read: 1.417298399999936 [s]
+aiofile_read(Process): 2.210614300000003 [s]
