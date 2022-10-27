@@ -6,6 +6,7 @@ import aiofiles
 import aiofiles.os
 import anyio
 from anyio.streams.file import FileReadStream, FileWriteStream
+import os
 import time
 from typing import Coroutine
 from contextlib import contextmanager
@@ -58,8 +59,6 @@ async def run_copy_test():
                 async for chunk in src_file:
                     await dest_file.send(chunk)
 
-        await io_test(anyio_copy, src_file)
-        
         
         # aiofiles      
         async def aiofiles_copy(src_file, dest_file):
@@ -70,9 +69,16 @@ async def run_copy_test():
                 fd_src = src.fileno()
                 fd_dst = dest.fileno()
                 await aiofiles.os.sendfile(fd_dst, fd_src, 0, n_bytes)
-                
-        await io_test(aiofiles_copy, src_file)
-        
+
+
+        # os.sendfile - sync version
+        async def sendfile_copy_sync(src_file, dest_file):
+            stat_src = os.stat(src_file)
+            n_bytes = stat_src.st_size
+            fd_src = os.open(src_file, os.O_RDONLY)
+            fd_dst = os.open(dest_file, os.O_RDWR | os.O_CREAT)
+            os.sendfile(fd_dst, fd_src, 0, n_bytes)
+
 
         # aiofile
         async def aiofile_copy(src_file, dest_file):
@@ -81,7 +87,10 @@ async def run_copy_test():
                 async for chunk in src.iter_chunked(32768):
                     await dest_file.write(chunk)
 
-        await io_test(aiofile_copy, src_file)
+        #await io_test(anyio_copy, src_file)
+        #await io_test(aiofiles_copy, src_file)
+        await io_test(sendfile_copy_sync, src_file)
+        #await io_test(aiofile_copy, src_file)
 
 
 if __name__ == '__main__':
