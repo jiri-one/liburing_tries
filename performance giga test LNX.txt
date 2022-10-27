@@ -1,11 +1,14 @@
-anyio_copy: 4.8728987740000775 [s]
-anyio_copy(Process): 4.591655998999999 [s]
+anyio_copy: 4.9969496849998905 [s]
+anyio_copy(Process): 4.617335623 [s]
 
-aiofiles_copy: 0.9334577159997934 [s]
-aiofiles_copy(Process): 0.3786937150000007 [s]
+aiofiles_copy: 1.2417885710001428 [s]
+aiofiles_copy(Process): 0.3574167330000009 [s]
 
-sendfile_copy_sync: 0.3954158820001794 [s]
-sendfile_copy_sync(Process): 0.3939262180000007 [s]
+sendfile_copy_sync: 0.3587592069998209 [s]
+sendfile_copy_sync(Process): 0.35746548300000214 [s]
+
+sendfile_copy_executor: 0.3776387549996798 [s]
+sendfile_copy_executor(Process): 0.37573312800000025 [s]
 
 aiofile_copy: 2.926035248000062 [s]
 aiofile_copy(Process): 2.0125960849999984 [s]
