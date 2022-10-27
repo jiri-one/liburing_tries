@@ -1,0 +1,11 @@
+anyio_copy: 4.8728987740000775 [s]
+anyio_copy(Process): 4.591655998999999 [s]
+
+aiofiles_copy: 0.9334577159997934 [s]
+aiofiles_copy(Process): 0.3786937150000007 [s]
+
+sendfile_copy_sync: 0.3954158820001794 [s]
+sendfile_copy_sync(Process): 0.3939262180000007 [s]
+
+aiofile_copy: 2.926035248000062 [s]
+aiofile_copy(Process): 2.0125960849999984 [s]

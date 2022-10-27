@@ -12,6 +12,23 @@ from typing import Coroutine
 from contextlib import contextmanager
 from tempfile import TemporaryDirectory, NamedTemporaryFile
 from string import ascii_letters, punctuation
+from hashlib import sha256
+
+
+async def hash_file(filename):
+    """"This function returns the SHA-256 hash
+    of the file passed into it"""
+
+    # make a hash object
+    h = sha256()
+
+    # open file for reading in binary mode
+    async with await FileReadStream.from_path(filename) as file:
+        async for chunk in file:
+            h.update(chunk)
+
+    # return the hex representation of digest
+    return h.hexdigest()
 
 
 @contextmanager
@@ -25,7 +42,7 @@ def meas_time(name: str):
         print(f"{name}(Process):", time.process_time() - start_process, "[s]")
 
 
-async def io_test(copy_func: Coroutine, src_file: anyio.Path):
+async def io_test(copy_func: Coroutine, src_file: anyio.Path, src_hash):
     with TemporaryDirectory() as tmp_dir:
         dest_file = anyio.Path(tmp_dir) / "dest_file"
 
@@ -34,6 +51,9 @@ async def io_test(copy_func: Coroutine, src_file: anyio.Path):
         print("start copy test")
         with meas_time(copy_func.__name__):
             await copy_func(src_file, dest_file)
+        dest_hash = await hash_file(dest_file)
+        if src_hash != dest_hash:
+            print("WRONG HASH!")
         print("end copy test\n")
 
 
@@ -51,6 +71,7 @@ async def run_copy_test():
         # create 1GB file
             await dest.send(char_to_file * (1024 * 1024 * 1024))
         
+        src_hash = await hash_file(src_file)
         
         # anyio
         async def anyio_copy(src_file, dest_file):
@@ -87,10 +108,10 @@ async def run_copy_test():
                 async for chunk in src.iter_chunked(32768):
                     await dest_file.write(chunk)
 
-        #await io_test(anyio_copy, src_file)
-        #await io_test(aiofiles_copy, src_file)
-        await io_test(sendfile_copy_sync, src_file)
-        #await io_test(aiofile_copy, src_file)
+        await io_test(anyio_copy, src_file, src_hash)
+        await io_test(aiofiles_copy, src_file, src_hash)
+        await io_test(sendfile_copy_sync, src_file, src_hash)
+        await io_test(aiofile_copy, src_file, src_hash)
 
 
 if __name__ == '__main__':
