@@ -100,9 +100,11 @@ async def run_copy_test():
             fd_src = os.open(src_file, os.O_RDONLY)
             fd_dst = os.open(dest_file, os.O_RDWR | os.O_CREAT)
             os.sendfile(fd_dst, fd_src, 0, n_bytes)
+            os.close(fd_src)
+            os.close(fd_dst)
         
         
-        # os.sendfile - ProcessPoolExecutor version
+        # os.sendfile - ThreadPoolExecutor version
         async def sendfile_copy_executor(src_file, dest_file):
             loop = asyncio.get_running_loop()
             def sendfile_copy_sync(src_file, dest_file):
@@ -111,11 +113,27 @@ async def run_copy_test():
                 fd_src = os.open(src_file, os.O_RDONLY)
                 fd_dst = os.open(dest_file, os.O_RDWR | os.O_CREAT)
                 os.sendfile(fd_dst, fd_src, 0, n_bytes)
-            # no need to use this context manger, loop.run_in_executor use ThereadPoolExecutor by default usually
+                os.close(fd_src)
+                os.close(fd_dst)
+            # no need to use this context manger, loop.run_in_executor use ThreadPoolExecutor by default usually
             with ThreadPoolExecutor() as e: 
                 result = await loop.run_in_executor(e, sendfile_copy_sync, src_file, dest_file)
                 # another solution, but without await
                 # future = e.submit(sendfile_copy_sync, src_file, dest_file)
+
+        
+        # os.sendfile - sync version with chunks
+        async def sendfile_copy_sync_chunk(src_file, dest_file):
+            stat_src = os.stat(src_file)
+            n_bytes = stat_src.st_size
+            fd_src = os.open(src_file, os.O_RDONLY)
+            fd_dst = os.open(dest_file, os.O_RDWR | os.O_CREAT)
+            offset = 0
+            chunk = 32768
+            while os.sendfile(fd_dst, fd_src, offset, chunk):
+                offset += chunk
+            os.close(fd_src)
+            os.close(fd_dst)
 
 
         # aiofile
@@ -129,6 +147,7 @@ async def run_copy_test():
         await io_test(aiofiles_copy, src_file, src_hash)
         await io_test(sendfile_copy_sync, src_file, src_hash)
         await io_test(sendfile_copy_executor, src_file, src_hash)
+        await io_test(sendfile_copy_sync_chunk, src_file, src_hash)
         await io_test(aiofile_copy, src_file, src_hash)
 
 
