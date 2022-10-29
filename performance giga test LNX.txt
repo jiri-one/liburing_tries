@@ -1,20 +1,23 @@
-anyio_copy: 5.304101730000184 [s]
-anyio_copy(Process): 4.692425696999999 [s]
+anyio_copy: 4.460380213999997 [s]
+anyio_copy(Process): 4.534781233 [s]
 
-aiofiles_copy: 1.1320481430002474 [s]
-aiofiles_copy(Process): 0.34284645199999986 [s]
+aiofiles_copy: 1.293095877000269 [s]
+aiofiles_copy(Process): 0.3417934650000003 [s]
 
-sendfile_copy_sync: 0.3834535609998966 [s]
-sendfile_copy_sync(Process): 0.38210898400000204 [s]
+sendfile_copy_sync: 0.35461429099996167 [s]
+sendfile_copy_sync(Process): 0.3533445730000011 [s]
 
-sendfile_copy_executor: 0.38970424100034506 [s]
-sendfile_copy_executor(Process): 0.38787273600000205 [s]
+sendfile_copy_executor: 0.357650943000408 [s]
+sendfile_copy_executor(Process): 0.35662918400000265 [s]
 
-sendfile_copy_sync_chunk: 0.41718308700001216 [s]
-sendfile_copy_sync_chunk(Process): 0.41521781200000163 [s]
+sendfile_copy_sync_chunk: 0.39469398600067507 [s]
+sendfile_copy_sync_chunk(Process): 0.3932909749999993 [s]
 
-sendfile_copy_chunk_executor: 0.4182173649996912 [s]
-sendfile_copy_chunk_executor(Process): 0.41590103000000056 [s]
+sendfile_copy_chunk_executor: 0.39003759199931665 [s]
+sendfile_copy_chunk_executor(Process): 0.3889032320000041 [s]
 
-aiofile_copy: 2.596125676000156 [s]
-aiofile_copy(Process): 1.9111397300000021 [s]
+aiofile_copy: 1.9746622069997102 [s]
+aiofile_copy(Process): 1.9244905229999958 [s]
+
+aioshutil_copy: 0.3556438550003804 [s]
+aioshutil_copy(Process): 0.3545443100000014 [s]
