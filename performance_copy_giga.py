@@ -1,11 +1,13 @@
-# pip install anyio aiofile aiofiles
+# pip install anyio aiofile aiofiles aioshutil
 import asyncio
 import random
+from re import S
 from aiofile import async_open
 import aiofiles
 import aiofiles.os
 import anyio
 from anyio.streams.file import FileReadStream, FileWriteStream
+import aioshutil
 import os
 import time
 from typing import Coroutine
@@ -158,6 +160,11 @@ async def run_copy_test():
                 async for chunk in src.iter_chunked(32768):
                     await dest_file.write(chunk)
 
+
+        # aioshutil
+        async def aioshutil_copy(src_file, dest_file):
+            await aioshutil.copy2(src_file, dest_file)
+
         await io_test(anyio_copy, src_file, src_hash)
         await io_test(aiofiles_copy, src_file, src_hash)
         await io_test(sendfile_copy_sync, src_file, src_hash)
@@ -165,6 +172,7 @@ async def run_copy_test():
         await io_test(sendfile_copy_sync_chunk, src_file, src_hash)
         await io_test(sendfile_copy_chunk_executor, src_file, src_hash)
         await io_test(aiofile_copy, src_file, src_hash)
+        await io_test(aioshutil_copy, src_file, src_hash)
 
 
 if __name__ == '__main__':
