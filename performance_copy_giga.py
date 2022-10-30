@@ -1,4 +1,4 @@
-# pip install anyio aiofile aiofiles aioshutil
+# pip install anyio aiofile aiofiles aioshutil aiopath
 import asyncio
 import random
 from re import S
@@ -8,6 +8,7 @@ import aiofiles.os
 import anyio
 from anyio.streams.file import FileReadStream, FileWriteStream
 import aioshutil
+import aiopath
 import os
 import time
 from typing import Coroutine
@@ -67,7 +68,6 @@ async def run_copy_test():
 
     
     with NamedTemporaryFile() as fp:
-        # anyio
         src_file = anyio.Path(fp.name)
         char_to_file = bytes(random.choice(ascii_letters + punctuation), 'utf-8')
         async with await FileWriteStream.from_path(src_file) as dest:
@@ -163,7 +163,20 @@ async def run_copy_test():
 
         # aioshutil
         async def aioshutil_copy(src_file, dest_file):
+            await wait_copy()
             await aioshutil.copy2(src_file, dest_file)
+        
+        # aiopath with lazy iteration (we need chunks here, because of memory)
+        async def aiopath_copy(src_file, dest_file):
+            await wait_copy()
+            async def to_chunks(file):
+                while chunk := await file.read(32768):
+                    yield chunk
+            src_file = aiopath.AsyncPath(src_file)
+            dest_file = aiopath.AsyncPath(dest_file)
+            async with src_file.open(mode='rb') as src, dest_file.open(mode='wb') as dest:
+                async for chunk in to_chunks(src):
+                    await dest.write(chunk)
 
         await io_test(anyio_copy, src_file, src_hash)
         await io_test(aiofiles_copy, src_file, src_hash)
@@ -173,6 +186,7 @@ async def run_copy_test():
         await io_test(sendfile_copy_chunk_executor, src_file, src_hash)
         await io_test(aiofile_copy, src_file, src_hash)
         await io_test(aioshutil_copy, src_file, src_hash)
+        await io_test(aiopath_copy, src_file, src_hash)
 
 
 if __name__ == '__main__':
