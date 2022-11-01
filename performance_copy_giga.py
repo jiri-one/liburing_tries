@@ -62,11 +62,6 @@ async def io_test(copy_func: Coroutine, src_file: anyio.Path, src_hash):
 
 
 async def run_copy_test():
-
-    async def wait_copy():
-        await asyncio.sleep(random.uniform(0, 1))
-
-    
     with NamedTemporaryFile() as fp:
         src_file = anyio.Path(fp.name)
         char_to_file = bytes(random.choice(ascii_letters + punctuation), 'utf-8')
@@ -78,7 +73,6 @@ async def run_copy_test():
         
         # anyio
         async def anyio_copy(src_file, dest_file):
-            await wait_copy()
             async with await FileReadStream.from_path(src_file) as src_file, await FileWriteStream.from_path(dest_file) as dest_file:
                 async for chunk in src_file:
                     await dest_file.send(chunk)
@@ -86,7 +80,6 @@ async def run_copy_test():
         
         # aiofiles      
         async def aiofiles_copy(src_file, dest_file):
-            await wait_copy()
             stat_src = await aiofiles.os.stat(src_file)
             async with aiofiles.open(src_file, mode='rb') as src, aiofiles.open(dest_file, mode='wb') as dest:
                 n_bytes = stat_src.st_size
@@ -155,7 +148,6 @@ async def run_copy_test():
 
         # aiofile
         async def aiofile_copy(src_file, dest_file):
-            await wait_copy()
             async with async_open(str(src_file), "rb") as src, async_open(str(dest_file), "wb") as dest_file:
                 async for chunk in src.iter_chunked(32768):
                     await dest_file.write(chunk)
@@ -163,12 +155,10 @@ async def run_copy_test():
 
         # aioshutil
         async def aioshutil_copy(src_file, dest_file):
-            await wait_copy()
             await aioshutil.copy2(src_file, dest_file)
         
         # aiopath with lazy iteration (we need chunks here, because of memory)
         async def aiopath_copy(src_file, dest_file):
-            await wait_copy()
             async def to_chunks(file):
                 while chunk := await file.read(32768):
                     yield chunk
